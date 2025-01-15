@@ -1,10 +1,12 @@
 package com.proyecto.jesica.inventarios.controlador;
 
+import com.proyecto.jesica.inventarios.excepcion.RecursosNoEncontradoExcepcion;
 import com.proyecto.jesica.inventarios.modelo.Producto;
 import com.proyecto.jesica.inventarios.servicio.ProductoServicio;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,5 +35,14 @@ public class ProductoControlador {
     public Producto agregarProducto(@RequestBody Producto producto){
         logger.info("Producto a agregar: " + producto);
         return this.productoServicio.guardarProducto(producto);
+    }
+
+    @GetMapping("/productos/{id}")
+    public ResponseEntity<Producto> obtenerProductoPorId(@PathVariable Integer id){
+       Producto producto = this.productoServicio.buscarProductoPorId(id);
+       if(producto != null){
+           return ResponseEntity.ok(producto);
+       }else
+          throw  new RecursosNoEncontradoExcepcion("No se encontro el producto de id "+ id);
     }
 }
